@@ -43,7 +43,7 @@ function createScene() {
 		farPlane
 	);
 	// Position the camera
-	camera.position.x = window.innerWidth/8;
+	camera.position.x = 150;
 	camera.position.y = 50;
 	camera.rotation.y = Math.PI/8;
 	//camera.rotation.x = -Math.PI/1;
@@ -75,6 +75,7 @@ function handleWindowResize() {
 	HEIGHT = window.innerHeight;
 	WIDTH = window.innerWidth;
 	renderer.setSize(WIDTH, HEIGHT);
+	//camera.position.x = window.innerWidth/8;
 	camera.aspect = WIDTH / HEIGHT;
 	camera.updateProjectionMatrix();
 }

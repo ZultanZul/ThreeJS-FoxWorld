@@ -33,7 +33,7 @@ function createScene() {
 
 	// Create the camera
 	aspectRatio = WIDTH / HEIGHT;
-	fieldOfView = 60;
+	fieldOfView = 50;
 	nearPlane = 1;
 	farPlane = 10000;
 	camera = new THREE.PerspectiveCamera(
@@ -112,7 +112,7 @@ function createLights(){
 
 
 Land = function(){
-	var geom = new THREE.CylinderGeometry(600,600,1700,40,10);
+	var geom = new THREE.CylinderBufferGeometry(600,600,1700,40,10);
 	//rotate on the x axis
 	geom.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
 	//create a material
@@ -131,7 +131,7 @@ Sun = function(){
 
 	this.mesh = new THREE.Object3D();
 
-	var sunGeom = new THREE.SphereGeometry( 400, 20, 10 );
+	var sunGeom = new THREE.SphereBufferGeometry( 400, 20, 10 );
 	var sunMat = new THREE.MeshPhongMaterial({
 		color: Colors.yellow,
 		shading:THREE.FlatShading,
@@ -218,28 +218,28 @@ Tree = function () {
 
 	var matTreeLeaves = new THREE.MeshPhongMaterial( { color:Colors.green, shading:THREE.FlatShading});
 
-	var geonTreeBase = new THREE.BoxGeometry( 10,20,10 );
+	var geonTreeBase = new THREE.BoxBufferGeometry( 10,20,10 );
 	var matTreeBase = new THREE.MeshBasicMaterial( { color:Colors.brown});
 	var treeBase = new THREE.Mesh(geonTreeBase,matTreeBase);
 	treeBase.castShadow = true;
 	treeBase.receiveShadow = true;
 	this.mesh.add(treeBase);
 
-	var geomTreeLeaves1 = new THREE.CylinderGeometry(1, 12*3, 12*3, 4 );
+	var geomTreeLeaves1 = new THREE.CylinderBufferGeometry(1, 12*3, 12*3, 4 );
 	var treeLeaves1 = new THREE.Mesh(geomTreeLeaves1,matTreeLeaves);
 	treeLeaves1.castShadow = true;
 	treeLeaves1.receiveShadow = true;
 	treeLeaves1.position.y = 20
 	this.mesh.add(treeLeaves1);
 
-	var geomTreeLeaves2 = new THREE.CylinderGeometry( 1, 9*3, 9*3, 4 );
+	var geomTreeLeaves2 = new THREE.CylinderBufferGeometry( 1, 9*3, 9*3, 4 );
 	var treeLeaves2 = new THREE.Mesh(geomTreeLeaves2,matTreeLeaves);
 	treeLeaves2.castShadow = true;
 	treeLeaves2.position.y = 40;
 	treeLeaves2.receiveShadow = true;
 	this.mesh.add(treeLeaves2);
 
-	var geomTreeLeaves3 = new THREE.CylinderGeometry( 1, 6*3, 6*3, 4);
+	var geomTreeLeaves3 = new THREE.CylinderBufferGeometry( 1, 6*3, 6*3, 4);
 	var treeLeaves3 = new THREE.Mesh(geomTreeLeaves3,matTreeLeaves);
 	treeLeaves3.castShadow = true;
 	treeLeaves3.position.y = 55;
@@ -252,7 +252,7 @@ Flower = function () {
 
 	this.mesh = new THREE.Object3D();
 
-	var geomStem = new THREE.BoxGeometry( 5,50,5,1,1,1 );
+	var geomStem = new THREE.BoxBufferGeometry( 5,50,5,1,1,1 );
 	var matStem = new THREE.MeshPhongMaterial( { color:Colors.green, shading:THREE.FlatShading});
 	var stem = new THREE.Mesh(geomStem,matStem);
 	stem.castShadow = true;
@@ -260,7 +260,7 @@ Flower = function () {
 	this.mesh.add(stem);
 
 
-	var geomPetalCore = new THREE.BoxGeometry(10,10,10,1,1,1);
+	var geomPetalCore = new THREE.BoxBufferGeometry(10,10,10,1,1,1);
 	var matPetalCore = new THREE.MeshPhongMaterial({color:Colors.yellow, shading:THREE.FlatShading});
 	petalCore = new THREE.Mesh(geomPetalCore, matPetalCore);
 	petalCore.castShadow = true;

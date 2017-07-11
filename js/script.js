@@ -4,6 +4,7 @@ var Colors = {
 	yellow:0xedeb27,
 	white:0xd8d0d1,
 	brown:0x59332e,
+	brownLight:0x987950,
 	pink:0xF5986E,
 	brownDark:0x23190f,
 	blue:0x68c3c0,
@@ -28,7 +29,7 @@ function createScene() {
 	scene = new THREE.Scene();
 
 	// Add FOV Fog effect to the scene. Same colour as the BG int he stylesheet.
-	scene.fog = new THREE.Fog(0xf7d9aa, 100, 800);
+	scene.fog = new THREE.Fog(0xf7d9aa, 150, 780);
 
 	// Create the camera
 	aspectRatio = WIDTH / HEIGHT;
@@ -42,10 +43,10 @@ function createScene() {
 		farPlane
 	);
 	// Position the camera
-	camera.position.x = 150;
+	camera.position.x = window.innerWidth/8;
 	camera.position.y = 50;
 	camera.rotation.y = Math.PI/8;
-	//camera.rotation.x = -Math.PI/6;
+	//camera.rotation.x = -Math.PI/1;
 	camera.position.z = 0;	
 
 	// Create the renderer
@@ -60,7 +61,7 @@ function createScene() {
 	renderer.setSize (WIDTH, HEIGHT);
 	//enable shadow rendering
 	renderer.shadowMap.enabled = true;
-
+	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 	// Add the Renderer to the DOM, in the world div.
 	container = document.getElementById('world');
 	container.appendChild (renderer.domElement);
@@ -87,22 +88,20 @@ function createLights(){
 	// Parallel rays
 	shadowLight = new THREE.DirectionalLight(0xffffff, .9);
 
-
-
 	shadowLight.position.set(0,350,350);
 	shadowLight.castShadow = true;
 
 	// define the visible area of the projected shadow
-	shadowLight.shadow.camera.left = -300;
-	shadowLight.shadow.camera.right = 300;
+	shadowLight.shadow.camera.left = -350;
+	shadowLight.shadow.camera.right = 450;
 	shadowLight.shadow.camera.top = 650;
 	shadowLight.shadow.camera.bottom = -50;
 	shadowLight.shadow.camera.near = 1;
 	shadowLight.shadow.camera.far = 1000;
 
 	// Shadow map size
-	shadowLight.shadow.mapSize.width = 1800;
-	shadowLight.shadow.mapSize.height = 1800;
+	shadowLight.shadow.mapSize.width = 800;
+	shadowLight.shadow.mapSize.height = 800;
 
 	// Add the lights to the scene
 	scene.add(hemisphereLight);  
@@ -125,14 +124,6 @@ Land = function(){
 	this.mesh = new THREE.Mesh(geom, mat);
 	//receive shadows
 	this.mesh.receiveShadow = true;
-}
-
-Orbit = function(){
-
-	var geom =new THREE.Object3D();
-
-	this.mesh = geom;
-	//this.mesh.add(sun);
 }
 
 Sun = function(){
@@ -188,7 +179,7 @@ Sky = function(){
 	this.mesh = new THREE.Object3D();
 
 	// Number of cloud groups
-	this.nClouds = 45;
+	this.nClouds = 25;
 
 	// Space the consistenly
 	var stepAngle = Math.PI*2 / this.nClouds;
@@ -210,7 +201,7 @@ Sky = function(){
 		c.mesh.rotation.z = a + Math.PI/2;
 
 		// random depth for the clouds on the z-axis
-		c.mesh.position.z = -100-Math.random()*600;
+		c.mesh.position.z = 0-Math.random()*600;
 
 		// random scale for each cloud
 		var s = 1+Math.random()*2;
@@ -342,7 +333,7 @@ Forest = function(){
 
 
 		// Number of Trees
-	this.nTreesForeground = 55;
+	this.nTreesForeground = 75;
 
 	// Space the consistenly
 	var stepAngleForeground = Math.PI*2 / this.nTreesForeground;
@@ -364,7 +355,7 @@ Forest = function(){
 		tFore.mesh.rotation.z = a + (Math.PI/2)*3;
 
 		// random depth for the tree on the z-axis
-		tFore.mesh.position.z = -40-Math.random()*90;
+		tFore.mesh.position.z = -40-Math.random()*80;
 
 		// random scale for each tree
 		var s = .3+Math.random()*0.8;
@@ -374,7 +365,7 @@ Forest = function(){
 	}
 
 	// Number of Trees
-	this.nFlowers = 250;
+	this.nFlowers = 300;
 
 	var stepAngleFlowers = Math.PI*2 / this.nFlowers;
 
@@ -400,11 +391,11 @@ Forest = function(){
 
 }
 
-var Fox = function() {
+var Fox = function(_color = Colors.red) {
 	
 	this.mesh = new THREE.Object3D();
 	
-	var redFurMat = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
+	var redFurMat = new THREE.MeshPhongMaterial({color:_color, shading:THREE.FlatShading});
 
 	// Create the Body
 	var geomBody = new THREE.BoxGeometry(100,50,50,1,1,1);
@@ -570,12 +561,6 @@ function createLand(){
   scene.add(land.mesh);
 }
 
-function createOrbit(){
-  orbit = new Orbit();
-  orbit.mesh.position.y = offSet;
-  orbit.mesh.rotation.z = -Math.PI/6; 
-  scene.add(orbit.mesh);
-}
 
 function createForest(){
   forest = new Forest();
@@ -594,53 +579,123 @@ function createFox(){
 	fox = new Fox();
 	fox.mesh.scale.set(.15,.15,.15);
 	//fox.mesh.rotation.y = -Math.PI/4 ;
-	fox.mesh.position.set(0,16,-150);
+	fox.mesh.position.set(50,12,-150);
 	scene.add(fox.mesh);
+}
+
+function createFoxMini(){ 
+	foxMini = new Fox(Colors.brownLight);
+	foxMini.mesh.scale.set(.075,.075,.075);
+	foxMini.mesh.position.set(25,6,-130);
+	scene.add(foxMini.mesh);
+}
+
+function createFoxMiniTwo(){ 
+	foxMiniTwo = new Fox();
+	foxMiniTwo.mesh.scale.set(.075,.075,.075);
+	foxMiniTwo.mesh.position.set(0,6,-135);
+	scene.add(foxMiniTwo.mesh);
 }
 
 function updateFox() {
   	if ( fox.mesh) {
-        fox.mesh.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.08 ;
+        fox.mesh.rotation.z = Math.sin(Date.now() * 0.006) * Math.PI * 0.08 ;
     }
 
 	if ( fox.legFR) {
-        fox.legFR.rotation.z = Math.sin(Date.now() * 0.005 + 1.2) * Math.PI * 0.3 ;
+        fox.legFR.rotation.z = Math.sin(Date.now() * 0.006 + 1.2) * Math.PI * 0.3 ;
     }
    if ( fox.legBR) {
-        fox.legBR.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.3 ;
+        fox.legBR.rotation.z = Math.sin(Date.now() * 0.006) * Math.PI * 0.3 ;
     }
 
    if ( fox.legFL) {
-        fox.legFL.rotation.z = Math.sin(Date.now() * 0.005 + 1.2) * -(Math.PI * 0.3) ;
+        fox.legFL.rotation.z = Math.sin(Date.now() * 0.006 + 1.2) * -(Math.PI * 0.3) ;
     }
 
     if ( fox.legBL) {
-        fox.legBL.rotation.z = Math.sin(Date.now() * 0.005) * -Math.PI * 0.3 ;
+        fox.legBL.rotation.z = Math.sin(Date.now() * 0.006) * -Math.PI * 0.3 ;
     }
     if ( fox.tail) {
-        fox.tail.rotation.z = Math.sin(Date.now() * 0.005) * (Math.PI * 0.08) + Math.PI/1.2 ;
-        fox.tail.rotation.x = Math.sin(Date.now() * 0.005) * Math.PI * 0.08;
-        fox.tail.rotation.y = Math.sin(Date.now() * 0.005) * Math.PI * 0.2;
+        fox.tail.rotation.z = Math.sin(Date.now() * 0.006) * (Math.PI * 0.08) + Math.PI/1.2 ;
+        fox.tail.rotation.x = Math.sin(Date.now() * 0.006) * Math.PI * 0.08;
+        fox.tail.rotation.y = Math.sin(Date.now() * 0.006) * Math.PI * 0.2;
     }
     if ( fox.head) {
-        fox.head.rotation.z = Math.sin(Date.now() * 0.005) * -Math.PI * 0.05 ;
-         fox.head.rotation.x = Math.sin(Date.now() * 0.005) * -Math.PI * 0.05 ;
+        fox.head.rotation.z = Math.sin(Date.now() * 0.006) * -Math.PI * 0.05 ;
+         fox.head.rotation.x = Math.sin(Date.now() * 0.006) * -Math.PI * 0.05 ;
+    }
+}
+
+function updateFoxMini() {
+  	if ( foxMini.mesh) {
+        foxMini.mesh.rotation.z = Math.sin(Date.now() * 0.0075) * Math.PI * 0.08 ;
+    }
+
+	if ( foxMini.legFR) {
+        foxMini.legFR.rotation.z = Math.sin(Date.now() * 0.0075 + 1.2) * Math.PI * 0.3 ;
+    }
+   if ( foxMini.legBR) {
+        foxMini.legBR.rotation.z = Math.sin(Date.now() * 0.0075) * Math.PI * 0.3 ;
+    }
+
+   if ( foxMini.legFL) {
+        foxMini.legFL.rotation.z = Math.sin(Date.now() * 0.0075 + 1.2) * -(Math.PI * 0.3) ;
+    }
+
+    if ( foxMini.legBL) {
+        foxMini.legBL.rotation.z = Math.sin(Date.now() * 0.0075) * -Math.PI * 0.3 ;
+    }
+    if ( foxMini.tail) {
+        foxMini.tail.rotation.z = Math.sin(Date.now() * 0.0075) * (Math.PI * 0.08) + Math.PI/1.2 ;
+        foxMini.tail.rotation.x = Math.sin(Date.now() * 0.0075) * Math.PI * 0.08;
+        foxMini.tail.rotation.y = Math.sin(Date.now() * 0.0075) * Math.PI * 0.2;
+    }
+    if ( foxMini.head) {
+        foxMini.head.rotation.z = Math.sin(Date.now() * 0.0075) * -Math.PI * 0.05 ;
+         foxMini.head.rotation.x = Math.sin(Date.now() * 0.0075) * -Math.PI * 0.05 ;
+    }
+}
+
+function updateFoxMiniTwo() {
+  	if ( foxMiniTwo.mesh) {
+        foxMiniTwo.mesh.rotation.z = Math.sin(Date.now() * 0.0075 + 1) * Math.PI * 0.08 ;
+    }
+
+	if ( foxMiniTwo.legFR) {
+        foxMiniTwo.legFR.rotation.z = Math.sin(Date.now() * 0.0075 + 2.2) * Math.PI * 0.3 ;
+    }
+   if ( foxMiniTwo.legBR) {
+        foxMiniTwo.legBR.rotation.z = Math.sin(Date.now() * 0.0075 + 1) * Math.PI * 0.3 ;
+    }
+
+   if ( foxMiniTwo.legFL) {
+        foxMiniTwo.legFL.rotation.z = Math.sin(Date.now() * 0.0075 + 2.2) * -(Math.PI * 0.3) ;
+    }
+
+    if ( foxMiniTwo.legBL) {
+        foxMiniTwo.legBL.rotation.z = Math.sin(Date.now() * 0.0075 + 1) * -Math.PI * 0.3 ;
+    }
+    if ( foxMiniTwo.tail) {
+        foxMiniTwo.tail.rotation.z = Math.sin(Date.now() * 0.0075 + 1) * (Math.PI * 0.08) + Math.PI/1.2 ;
+        foxMiniTwo.tail.rotation.x = Math.sin(Date.now() * 0.0075 + 1) * Math.PI * 0.08;
+        foxMiniTwo.tail.rotation.y = Math.sin(Date.now() * 0.0075 + 1) * Math.PI * 0.2;
+    }
+    if ( foxMiniTwo.head) {
+        foxMiniTwo.head.rotation.z = Math.sin(Date.now() * 0.0075 + 1) * -Math.PI * 0.05 ;
+         foxMiniTwo.head.rotation.x = Math.sin(Date.now() * 0.0075 + 1) * -Math.PI * 0.05 ;
     }
 }
 
 function loop(){
   land.mesh.rotation.z += .003;
-  orbit.mesh.rotation.z += .001;
   sky.mesh.rotation.z += .001;
   forest.mesh.rotation.z += .003;
-	updateFox();
+  updateFox();
+  updateFoxMini();
+  updateFoxMiniTwo();
   renderer.render(scene, camera);
   requestAnimationFrame(loop);
-
-
-
-
-
 }
 
 
@@ -648,7 +703,8 @@ function init(event) {
 	createScene();
 	createLights();
 	createFox();
-	createOrbit();
+	createFoxMini();
+	createFoxMiniTwo();
 	createSun();
 	createLand();
 	createForest();
